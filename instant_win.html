@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>簡易インスタントウィン</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color:black;
+            #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px 60px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            position: absolute;
+            top: 250px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            outline: none;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        #result {
+            margin-top: 30px;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #555;
+            min-height: 30px; /* 結果表示前のスペース確保 */
+        }
+        .win {
+            color: #28a745; /* 緑色 */
+        }
+        .lose {
+            color: #dc3545; /* 赤色 */
+        }
+        .Hansha {
+            position: absolute;
+            top: 50px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="Hansha">
+      <a href="https://nitro-groserin.github.io/deta/">
+        <img src="/img-box/無題155_20250329132501 (1).png" width="380px" height="175px" alt="反社スレイヤー"/>
+      </a>
+    </div>
+    
+    
+    <div class="container">
+        <p>暴風プロジェクト</p>
+        <h1>いますぐ抽選！</h1>
+        <p>ボタンをクリックして、今日の運だめし！</p>
+        <button id="drawButton">抽選する！</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // 当選確率を設定 (例: 30%の確率で当選)
+        const WIN_PROBABILITY = 0.0001; // 0.0 (0%) から 1.0 (100%) の間で設定
+
+        const drawButton = document.getElementById('drawButton');
+        const resultDiv = document.getElementById('result');
+
+        drawButton.addEventListener('click', () => {
+            // 抽選ボタンを無効化し、連打を防ぐ
+            drawButton.disabled = true;
+            resultDiv.textContent = '抽選中...';
+            resultDiv.className = ''; // クラスをリセット
+
+            // 少し遅延させて「抽選中...」を表示する演出
+            setTimeout(() => {
+                // 0.0から1.0までのランダムな数値を生成
+                const randomNumber = Math.random();
+
+                if (randomNumber < WIN_PROBABILITY) {
+                    // 当選！
+                    resultDiv.textContent = '🎉 おめでとうございます！アタリ！ 🎉';
+                    resultDiv.classList.add('win');
+                } else {
+                    // 残念！ハズレ
+                    resultDiv.textContent = '残念！ハズレです…';
+                    resultDiv.classList.add('lose');
+                }
+                // 抽選後、再度ボタンを有効化 (もう一度抽選したい場合)
+                // drawButton.disabled = false; // 今回は1回きりなのでコメントアウト
+            }, 1000); // 1秒後に結果を表示
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+https://github.com/nitro-groserin/instant.git
+
