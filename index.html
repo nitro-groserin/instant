@@ -95,7 +95,19 @@
         const drawButton = document.getElementById('drawButton');
         const resultDiv = document.getElementById('result');
 
+        // ★追加するサウンド関連のコード★
+        // クリック音用のAudioオブジェクトを作成
+        const clickSound = new Audio('sound-box/sen_ge_mgun01.mp3'); // 例: クリック音
+        // 当選音用のAudioオブジェクトを作成
+        const winSound = new Audio('sound-box②/男衆「イヤッホー！」.mp3'); // 例: 当選音
+        // ハズレ音用のAudioオブジェクトを作成
+        const loseSound = new Audio('sound-box②/爆発2.mp3'); // 例: ハズレ音
+
+
         drawButton.addEventListener('click', () => {
+            // クリック音を再生
+            clickSound.play();
+
             // 抽選ボタンを無効化し、連打を防ぐ
             drawButton.disabled = true;
             resultDiv.textContent = '抽選中...';
@@ -110,13 +122,15 @@
                     // 当選！
                     resultDiv.textContent = '🎉 おめでとうございます！アタリ！ 🎉';
                     resultDiv.classList.add('win');
+                    winSound.play(); // 当選音を再生
                 } else {
                     // 残念！ハズレ
                     resultDiv.textContent = '残念！ハズレです…';
                     resultDiv.classList.add('lose');
+                    loseSound.play(); // ハズレ音を再生
                 }
-                // 抽選後、再度ボタンを有効化 (もう一度抽選したい場合)
-                // drawButton.disabled = false; // 今回は1回きりなのでコメントアウト
+                // 抽選後、再度ボタンを有効化 (今回は1回きりなのでコメントアウト)
+                // drawButton.disabled = false; 
             }, 1000); // 1秒後に結果を表示
         });
     </script>
@@ -125,7 +139,4 @@
 
 
 
-
-
-https://github.com/nitro-groserin/instant.git
 
