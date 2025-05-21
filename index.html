@@ -12,8 +12,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color:black;
-            #f0f8ff;
+            background-color: black; /* 元の指定 #f0f8ff を黒に変更 */
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
@@ -34,7 +33,8 @@
             margin-bottom: 30px;
             font-size: 2em;
         }
-        button {
+        /* 抽選ボタンのスタイル */
+        #drawButton {
             background-color: #007bff;
             color: white;
             border: none;
@@ -45,11 +45,11 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
             outline: none;
         }
-        button:hover {
+        #drawButton:hover {
             background-color: #0056b3;
             transform: translateY(-2px);
         }
-        button:active {
+        #drawButton:active {
             transform: translateY(0);
         }
         #result {
@@ -69,17 +69,100 @@
             position: absolute;
             top: 50px;
         }
+        .Hansha2 {
+            position: absolute;
+            top: 605px;
+        }
+
+        /* モーダル表示ボタンのスタイル */
+        #openModalButton {
+            background-color: #ffc107; /* 黄色系 */
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* ボタンにも影を追加 */
+        }
+        #openModalButton:hover {
+            background-color: #e0a800;
+            transform: translateY(-2px);
+        }
+        #openModalButton:active {
+            transform: translateY(0);
+        }
+
+        /* モーダルのスタイル */
+        .modal {
+            display: none; /* 初期状態では非表示 */
+            position: fixed; /* 画面に固定 */
+            z-index: 1000; /* 最前面に表示 */
+            left: 0;
+            top: 0;
+            width: 90%;
+            height: 90%;
+            overflow: auto; /* コンテンツがはみ出たらスクロール */
+            background-color: rgba(0,0,0,0.8); /* 半透明の黒背景 */
+            /* display: flex;  この行を削除またはコメントアウト */
+            justify-content: center; /* 水平中央 */
+            align-items: center; /* 垂直中央 */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%; /* 適度な幅 */
+            max-width: 900px; /* 最大幅 */
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            position: relative; /* 閉じるボタンの配置用 */
+            box-sizing: border-box; /* paddingを含めて幅を計算 */
+        }
+
+        /* モーダルのアニメーション */
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 9;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .modal-video-player {
+            width: 100%;
+            height: auto; /* アスペクト比を維持 */
+            display: block; /* 余白をなくす */
+        }
     </style>
 </head>
 <body>
-    
+
     <div class="Hansha">
       <a href="https://nitro-groserin.github.io/deta/">
         <img src="無題155_20250329132501 (1).png" width="380px" height="175px" alt="反社スレイヤー"/>
       </a>
     </div>
-    
-    
+
+
     <div class="container">
         <p>暴風プロジェクト</p>
         <h1>いますぐ抽選！</h1>
@@ -88,9 +171,24 @@
         <div id="result"></div>
     </div>
 
+    <div class="Hansha2">
+      <a href="javascript:void(0);" id="openModalLink"> <button id="openModalButton">動画を再生する</button>
+      </a>
+    </div>
+
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <video id="modalVideoPlayer" controls src="screen-20250519-082814~3.mp4" class="modal-video-player">
+                お使いのブラウザは動画をサポートしていません。
+            </video>
+        </div>
+    </div>
+
+
     <script>
         // 当選確率を設定 (例: 30%の確率で当選)
-        const WIN_PROBABILITY = 0.0001; // 0.0 (0%) から 1.0 (100%) の間で設定
+        const WIN_PROBABILITY = 0.001; // 0.0 (0%) から 1.0 (100%) の間で設定
 
         const drawButton = document.getElementById('drawButton');
         const resultDiv = document.getElementById('result');
@@ -130,12 +228,47 @@
                     loseSound.play(); // ハズレ音を再生
                 }
                 // 抽選後、再度ボタンを有効化 (今回は1回きりなのでコメントアウト)
-                // drawButton.disabled = false; 
+                // drawButton.disabled = false;
             }, 1000); // 1秒後に結果を表示
+        });
+
+
+        // ★モーダル関連のJavaScriptコード★
+        const openModalLink = document.getElementById('openModalLink'); // 新しく追加したリンクのID
+        const videoModal = document.getElementById('videoModal');
+        const closeButton = document.getElementsByClassName('close-button')[0];
+        const modalVideoPlayer = document.getElementById('modalVideoPlayer');
+
+        // モーダルを開くボタンがクリックされた時の処理
+        openModalLink.addEventListener('click', (event) => {
+            event.preventDefault(); // aタグのデフォルトの動作（ページ遷移）をキャンセル
+            videoModal.style.display = 'flex'; // flexを使って中央配置
+            // モーダル内の動画を再生開始
+            modalVideoPlayer.play();
+        });
+
+        // 閉じるボタンがクリックされた時の処理
+        closeButton.addEventListener('click', () => {
+            videoModal.style.display = 'none';
+            // モーダルを閉じるときに動画を一時停止する
+            modalVideoPlayer.pause();
+            // 動画の再生時間をリセットしたい場合は以下を追加
+            // modalVideoPlayer.currentTime = 0;
+        });
+
+        // モーダルの外側をクリックで閉じる処理
+        window.addEventListener('click', (event) => {
+            if (event.target == videoModal) {
+                videoModal.style.display = 'none';
+                modalVideoPlayer.pause();
+                // 動画の再生時間をリセットしたい場合は以下を追加
+                // modalVideoPlayer.currentTime = 0;
+            }
         });
     </script>
 </body>
 </html>
+
 
 
 
